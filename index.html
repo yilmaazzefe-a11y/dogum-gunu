@@ -24,6 +24,7 @@
             padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         }
 
+        /* HACKER KANVAS */
         #matrix-canvas {
             position: fixed; top: 0; left: 0; z-index: 1;
             width: 100% !important; height: 100% !important;
@@ -32,7 +33,7 @@
         #intro-overlay {
             position: fixed; inset: 0; z-index: 10;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            background: black;
+            background: rgba(0, 0, 0, 0.8);
             width: 100%; height: 100%;
         }
 
@@ -42,10 +43,11 @@
         .pink-text { font-size: 2.5rem; color: #ff80ab; text-shadow: 0 0 20px #ff80ab; text-align: center; padding: 0 10px; }
         .giant-heart { font-size: 120px; color: #ff80ab; margin-top: 10px; filter: drop-shadow(0 0 25px #ff80ab); }
 
+        /* SON EKRAN */
         #final-page {
             position: fixed; inset: 0; z-index: 20;
             display: none; flex-direction: column; justify-content: center; align-items: center;
-            background: rgba(0, 0, 0, 0.5); 
+            background: #000; 
             text-align: center;
             padding: 20px;
             width: 100%; height: 100%;
@@ -60,7 +62,6 @@
             flex-shrink: 0;
         }
 
-        /* BURASI FOTOĞRAFI GÖSTEREN YER */
         .circle-frame img {
             width: 100%; height: 100%; object-fit: cover;
         }
@@ -78,7 +79,7 @@
 
         .rain-heart {
             position: absolute; color: #ff4d4d; pointer-events: none;
-            z-index: 15; animation: fall linear forwards;
+            z-index: 25; animation: fall linear forwards;
         }
         @keyframes fall {
             0% { transform: translateY(110vh) scale(0.5); opacity: 0; }
@@ -114,6 +115,7 @@
 
     <script>
         document.addEventListener('touchmove', function(e) { e.preventDefault(); }, { passive: false });
+        
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
         function resizeCanvas() {
@@ -140,7 +142,8 @@
                 drops[i]++;
             }
         }
-        setInterval(drawMatrix, 50);
+        // Hacker yazısı başlat
+        const mInterval = setInterval(drawMatrix, 50);
 
         let count = 3;
         const countBox = document.getElementById('num-box');
@@ -156,8 +159,14 @@
                 clearInterval(cd);
                 countBox.style.display = 'none';
                 msgGroup.style.display = 'flex';
+                
                 setTimeout(() => {
+                    // SÜRPRİZ ANI: Hacker yazılarını ve geri sayımı durdur/sil
+                    clearInterval(mInterval); 
+                    canvas.style.display = 'none'; 
                     intro.style.display = 'none';
+                    
+                    // Son ekranı aç ve kalpleri başlat
                     finalPage.style.display = 'flex';
                     setInterval(makeHeart, 200); 
                 }, 2500);
