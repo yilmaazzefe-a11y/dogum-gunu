@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İyi Ki Doğdun Nehir!</title>
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #00ff41;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            text-shadow: 0 0 5px #00ff41;
+        }
+
+        #hacker-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        .container {
+            text-align: center;
+            border: 2px solid #00ff41;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            box-shadow: 0 0 20px #00ff41;
+        }
+
+        h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        
+        #countdown {
+            font-size: 2rem;
+            margin: 20px 0;
+            color: #fff;
+            text-shadow: 0 0 10px #00ff41;
+        }
+
+        .photo-frame {
+            width: 250px;
+            height: 250px;
+            border: 3px double #00ff41;
+            margin: 20px auto;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .photo-frame img {
+            max-width: 100%;
+            height: auto;
+            filter: grayscale(100%) brightness(80%) sepia(50%) hue-rotate(100deg);
+        }
+
+        .message { font-style: italic; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+    <canvas id="hacker-bg"></canvas>
+
+    <div class="container">
+        <h1>> SYSTEM_ACCESS: GRANTED</h1>
+        <h2>HAPPY_BIRTHDAY_NEHIR.exe</h2>
+        
+        <div class="photo-frame">
+            <img src="elif.jpg" alt="[DOSYA_BOZUK_VEYA_YOK]">
+        </div>
+
+        <div id="countdown">Yükleniyor...</div>
+
+        <p class="message">"Dünyanın en havalı insanı için geri sayım başladı..."</p>
+    </div>
+
+    <script>
+        // Basit Geri Sayım (Tarihi Nehir'in doğum gününe göre ayarla)
+        const targetDate = new Date("April 1, 2027 00:00:00").getTime();
+
+        setInterval(function() {
+            const now = new Date().getTime();
+            const diff = targetDate - now;
+
+            const gun = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const saat = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const dakika = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const saniye = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById("countdown").innerHTML = 
+                gun + "g " + saat + "s " + dakika + "dk " + saniye + "sn ";
+        }, 1000);
+
+        // Arka plan hacker efekti (Matrix stili)
+        const canvas = document.getElementById('hacker-bg');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const letters = "0101010101NEHIR1010101";
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function draw() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#0f0";
+            ctx.font = fontSize + "px arial";
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters.charAt(Math.floor(Math.random() * letters.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(draw, 33);
+    </script>
+</body>
+</html>

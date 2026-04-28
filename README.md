@@ -1,2 +1,0 @@
-# dogum-gunu
-Elifiçin
