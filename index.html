@@ -2,134 +2,177 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İyi Ki Doğdun Elif!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Elif için Sürpriz ❤️</title>
     <style>
-        body {
-            background-color: #000;
-            color: #ff69b4;
-            font-family: 'Courier New', Courier, monospace;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
+        /* 1. TÜM SAYFAYI ÇİVİLE */
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; 
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: none;
         }
 
-        #bg-canvas {
+        body, html { 
+            width: 100%; height: 100%; background: #000; 
+            overflow: hidden !important;
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1;
+            top: 0; left: 0;
+            font-family: 'Arial', sans-serif; 
+            color: white;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         }
 
-        .main-container {
-            position: relative;
-            z-index: 10;
+        #matrix-canvas {
+            position: fixed; top: 0; left: 0; z-index: 1;
+            width: 100% !important; height: 100% !important;
+        }
+
+        #intro-overlay {
+            position: fixed; inset: 0; z-index: 10;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            background: black;
+            width: 100%; height: 100%;
+        }
+
+        #num-box { font-size: 100px; color: #ff80ab; font-weight: bold; text-shadow: 0 0 20px #ff80ab; }
+        
+        .message-group { display: none; flex-direction: column; align-items: center; }
+        .pink-text { font-size: 2.5rem; color: #ff80ab; text-shadow: 0 0 20px #ff80ab; text-align: center; padding: 0 10px; }
+        .giant-heart { font-size: 120px; color: #ff80ab; margin-top: 10px; filter: drop-shadow(0 0 25px #ff80ab); }
+
+        #final-page {
+            position: fixed; inset: 0; z-index: 20;
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+            background: rgba(0, 0, 0, 0.5); 
             text-align: center;
-            background: rgba(0, 0, 0, 0.7);
             padding: 20px;
-            border: 2px solid #ff69b4;
-            box-shadow: 0 0 20px #ff69b4;
-            border-radius: 15px;
+            width: 100%; height: 100%;
         }
 
-        #countdown { font-size: 3rem; color: #fff; text-shadow: 0 0 10px #ff69b4; }
-
-        .hidden { display: none; }
-
-        #final-screen h1 { font-size: 2.5rem; color: #ff1493; margin-bottom: 10px; }
-        #final-screen h2 { color: #ff69b4; }
-
-        .photo-frame {
-            width: 280px; height: 280px;
-            border: 4px solid #ff1493;
-            margin: 20px auto;
-            border-radius: 50%;
-            overflow: hidden;
-            box-shadow: 0 0 15px #ff1493;
+        .circle-frame {
+            width: 220px; height: 220px; border-radius: 50%;
+            border: 4px solid #fff; overflow: hidden;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.5);
+            display: flex; justify-content: center; align-items: center;
+            margin-bottom: 15px;
+            flex-shrink: 0;
         }
-        .photo-frame img { width: 100%; height: 100%; object-fit: cover; }
 
-        .cake { font-size: 50px; margin: 10px; }
-        .hearts { color: red; font-size: 24px; }
+        /* BURASI FOTOĞRAFI GÖSTEREN YER */
+        .circle-frame img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+
+        .red-heart-under { font-size: 50px; margin-bottom: 10px; animation: pulse 1.5s infinite; }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .final-title { color: white; font-size: 1.8rem; margin-bottom: 8px; text-shadow: 0 0 10px black; }
+        .final-sub { color: #ff4d4d; font-size: 1.5rem; font-weight: bold; text-shadow: 0 0 15px #ff4d4d; }
+
+        .rain-heart {
+            position: absolute; color: #ff4d4d; pointer-events: none;
+            z-index: 15; animation: fall linear forwards;
+        }
+        @keyframes fall {
+            0% { transform: translateY(110vh) scale(0.5); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+
+        @media (max-width: 600px) {
+            .circle-frame { width: 180px; height: 180px; }
+            .pink-text { font-size: 2rem; }
+        }
     </style>
 </head>
-<body>
+<body scroll="no"> 
+    <canvas id="matrix-canvas"></canvas>
 
-    <canvas id="bg-canvas"></canvas>
-
-    <div class="main-container">
-        <div id="countdown-screen">
-            <h2 style="color: #ff69b4;">BÜYÜK SÜRPRİZE SON...</h2>
-            <div id="countdown">Yükleniyor...</div>
-        </div>
-
-        <div id="final-screen" class="hidden">
-            <div class="hearts">❤️❤️❤️❤️❤️❤️❤️</div>
-            <h1>SENİ SEVİYORUM ELİF</h1>
-            <div class="photo-frame">
-                <img src="elif.jpg" alt="Elif">
-            </div>
-            <div class="cake">🎂✨🎁</div>
-            <h2>İyi Ki Doğdun!</h2>
-            <div class="hearts">❤️❤️❤️❤️❤️❤️❤️</div>
+    <div id="intro-overlay">
+        <div id="num-box">3</div>
+        <div class="message-group" id="msg-group">
+            <h2 class="pink-text">Seni Seviyorum Elif</h2>
+            <div class="giant-heart">❤️</div>
         </div>
     </div>
 
-    <script>
-        // 1. PEMBE HACKER YAĞMURU
-        const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+    <div id="final-page">
+        <div class="circle-frame">
+            <img src="elif.jpg" alt="Elif">
+        </div>
+        <div class="red-heart-under">❤️</div>
+        <h1 class="final-title">İyi ki doğdun Elif! 🥳</h1>
+        <p class="final-sub">Seni Seviyorum</p>
+    </div>
 
-        const letters = "ELIF❤️❤️01010101";
+    <script>
+        document.addEventListener('touchmove', function(e) { e.preventDefault(); }, { passive: false });
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const chars = "ELIF❤️01010101";
         const fontSize = 16;
-        const columns = canvas.width / fontSize;
-        const drops = Array(Math.floor(columns)).fill(1);
+        let columns = canvas.width / fontSize;
+        let drops = Array(Math.floor(columns)).fill(1);
 
         function drawMatrix() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillStyle = "rgba(0, 0, 0, 0.15)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#ff69b4"; // PEMBE RENK
-            ctx.font = fontSize + "px arial";
+            ctx.fillStyle = "#ff80ab"; 
+            ctx.font = "bold " + fontSize + "px monospace";
             for (let i = 0; i < drops.length; i++) {
-                const text = letters.charAt(Math.floor(Math.random() * letters.length));
+                const text = chars[Math.floor(Math.random() * chars.length)];
                 ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.98) drops[i] = 0;
                 drops[i]++;
             }
         }
-        setInterval(drawMatrix, 35);
+        setInterval(drawMatrix, 50);
 
-        // 2. GERİ SAYIM VE GEÇİŞ (Tarihi bugünden sonraya kurdum ki geri sayımı gör)
-        const targetDate = new Date().getTime() + 10000; // ŞİMDİLİK 10 SANİYE SONRAYA AYARLI
+        let count = 3;
+        const countBox = document.getElementById('num-box');
+        const intro = document.getElementById('intro-overlay');
+        const msgGroup = document.getElementById('msg-group');
+        const finalPage = document.getElementById('final-page');
 
-        const timer = setInterval(function() {
-            const now = new Date().getTime();
-            const diff = targetDate - now;
-
-            const saniye = Math.floor((diff % (1000 * 60)) / 1000);
-            document.getElementById("countdown").innerHTML = saniye + "sn";
-
-            if (diff < 0) {
-                clearInterval(timer);
-                document.getElementById("countdown-screen").classList.add("hidden");
-                document.getElementById("final-screen").classList.remove("hidden");
-                startFireworks(); // Havai fişek başlasın
+        const cd = setInterval(() => {
+            count--;
+            if(count > 0) {
+                countBox.textContent = count;
+            } else {
+                clearInterval(cd);
+                countBox.style.display = 'none';
+                msgGroup.style.display = 'flex';
+                setTimeout(() => {
+                    intro.style.display = 'none';
+                    finalPage.style.display = 'flex';
+                    setInterval(makeHeart, 200); 
+                }, 2500);
             }
         }, 1000);
 
-        // 3. BASİT HAVAİ FİŞEK EFEKTİ (Kalp şeklinde patlamalar için simülasyon)
-        function startFireworks() {
-            // Arka planı tamamen kalplerle dolduracak basit bir efekt
-            setInterval(() => {
-                ctx.fillStyle = "#ff1493";
-                ctx.beginPath();
-                ctx.arc(Math.random()*canvas.width, Math.random()*canvas.height, 2, 0, Math.PI*2);
-                ctx.fill();
-            }, 50);
+        function makeHeart() {
+            const h = document.createElement('div');
+            h.className = 'rain-heart';
+            h.innerHTML = '❤️';
+            h.style.left = Math.random() * 100 + 'vw';
+            h.style.fontSize = (Math.random() * 15 + 20) + 'px';
+            h.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            document.body.appendChild(h);
+            setTimeout(() => h.remove(), 4000);
         }
     </script>
 </body>
